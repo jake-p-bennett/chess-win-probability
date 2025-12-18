@@ -1,0 +1,6 @@
+python-chess
+pandas
+scikit-learn
+requests
+matplotlib
+seaborn
