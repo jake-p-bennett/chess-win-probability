@@ -1,12 +1,18 @@
 # Data files (too large)
 *.pgn
-data/
+games/
+features/
 
 # Python
 __pycache__/
 *.pyc
+*.pyo
 .venv/
 venv/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
 
 # OS files
 .DS_Store
@@ -15,3 +21,9 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# Environment
+.env
+*.log
