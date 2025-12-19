@@ -1,6 +1,6 @@
 # Chess Win Probability Calculator
 
-Uses logistic regression to predict bullet and blitz chess game outcomes from board position, player ratings, and time remaining. Trained on games played on [lichess.org](https://lichess.org).
+Uses logistic regression to predict bullet and blitz chess game outcomes from player ratings, material count, and time remaining. Trained on games played on [lichess.org](https://lichess.org).
 
 ## Key Findings
 
@@ -21,13 +21,13 @@ The effect of time pressure decreases as the total starting time of the game inc
 
 ### Coefficient Heatmap
 
-In blitz chess, time pressure matters, but not as much as rating or material advantages. See results folder in repo for model coefficients for other time controls. 
+In blitz chess, time pressure matters, but not as much as rating or material advantages. See `results/` folder in repo for model coefficients for other time controls. 
 
 ![Coefficient Heatmap](images/coefficient_heatmap.png)
 
 ### Model Performance
 
-A simple logistic linear regression model predicts win probability fairly well. Model was trained on 20,000 games for each rating band.
+A simple logistic linear regression model predicts win probability fairly well. Model was trained on 20,000 games for each rating band and each time control.
 
 ![AUC Comparison](images/auc_comparison.png)
 
@@ -43,10 +43,11 @@ pip install -r requirements.txt
 
 # Predict win probability for a position
 python scripts/predict.py \
-    --fen "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4" \
-    --white_elo 1600 --black_elo 1550 \
-    --white_time 150 --black_time 140 \
-    --time_control 180 \
+    --model models/1000-1499/blitz_3.pkl \
+    --fen "rn2kb1r/p3qppp/2p2n2/1N2p1B1/2B1P3/1Q6/PPP2PPP/R3K2R b KQkq - 0 10" \
+    --white_elo 1200 --black_elo 1250 \
+    --white_time "1:45" --black_time "1:12" \
+    --time_control "3+0" \
     --verbose
 ```
 
@@ -62,8 +63,11 @@ chess-win-probability/
 │   ├── train_model.py       # Train and evaluate models
 │   ├── compare_models.py    # Compare models across datasets
 │   └── predict.py           # Make predictions on new positions
-├── models/                   # Saved model files (.pkl)
-├── results/                  # Output tables and reports
+├── models/                  # Saved model files (.pkl)
+├── results/                 # Output tables and reports
+├── notebooks/           
+│   └── results_visualization.ipynb  # Visualize results
+├── images/                  # Saved images of visualized results
 ```
 
 ## Full Pipeline
@@ -82,7 +86,7 @@ python scripts/download_games.py \
 python scripts/download_games.py \
     --users DrNykterstein EricRosen \
     --max_per_user 1000 \
-    --output data/games.pgn
+    --output games/top_level_games.pgn
 ```
 
 ### 2. Extract Features
@@ -90,14 +94,14 @@ python scripts/download_games.py \
 ```bash
 # Extract features from all games
 python scripts/extract_features.py \
-    data/games_1500_2000.pgn \
-    data/features_1500_2000.csv \
+    games/1000-1499/bullet_games.pgn \
+    features/1000-1499/features_1_0.csv \
     --num_games 20000
 
 # Filter by specific time control
 python scripts/extract_features.py \
-    data/games.pgn \
-    data/features_3_0.csv \
+    games/1000-1499/blitz_games.pgn \
+    features/1000-1499/features_3_0.csv \
     --num_games 20000 \
     --time_control "180+0"
 ```
@@ -106,9 +110,10 @@ python scripts/extract_features.py \
 
 ```bash
 # Train and evaluate all model variants
-python scripts/train_model.py data/features_1500_2000.csv \
-    --output_report results/report_1500_2000.txt \
-    --save_model models/model_1500_2000.pkl
+python scripts/train_model.py \
+    features/1000-1499/features_1_0.csv \
+    --output_report results/1000-1499/bullet.txt \
+    --save_model models/1000-1499/bullet.pkl
 ```
 
 ### 4. Compare Across Datasets
@@ -155,7 +160,7 @@ Positions within a game are correlated — including all positions reduces effec
 ### Why Exclude First/Last 5 Moves?
 
 - **First 5 moves:** Positions carry very little signal about the outcome of the game.
-- **Last 5 moves:** Positions are much more likely to be from games that are nearly decided
+- **Last 5 moves:** Positions are much more likely to be from games that are nearly decided, inflating accuracy without learning useful signal.
 
 ## Possible Extensions
 
