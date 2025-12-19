@@ -1,22 +1,29 @@
 # Chess Win Probability Calculator
 
-Uses logistic regression to predict bullet, blitz, and rapid chess game outcomes from board position, player ratings, and time remaining. Trained on games played on [lichess.org](https://lichess.org).
+Uses logistic regression to predict bullet and blitz chess game outcomes from board position, player ratings, and time remaining. Trained on games played on [lichess.org](https://lichess.org).
 
 ## Key Findings
 
-- **Elo difference is the strongest predictor** across all rating bands
+- **Elo difference is the strongest predictor** across all rating bands and time controls
+
 - **Time pressure affects all players equally** — coefficients are similar from 1000-2500 Elo
 - **Material advantage matters slightly less at higher ratings** (0.71 → 0.59 coefficient)
 
-### Model Performance
+### Model Performance (3+0 blitz)
 
 | Rating Band | N Samples | AUC-ROC |
 |-------------|-----------|---------|
-| 1000-1500   | ~20,000   | 0.72    |
-| 1500-2000   | ~20,000   | 0.72    |
-| 2000-2500   | ~20,000   | 0.73    |
+| 1000-1500   | 20,000   | 0.72    |
+| 1500-2000   | 20,000   | 0.77    |
+| 2000-2500   | 20,000   | 0.81    |
 
-### Feature Coefficients (1500-2000 Elo)
+Increase in 5-fold cross-validation AUC for each rating band may indicate that there is more randomness in games among lower rated players.
+
+![Time Coefficient Comparison](images/time_coefficient_comparison.png)
+![Coefficient Heatmap](images/coefficient_heatmap.png)
+![AUC Comparison](images/auc_comparison.png)
+
+### Feature Coefficients (1500-2000 Elo, 3+0 blitz)
 
 | Feature | Coefficient | Interpretation |
 |---------|-------------|----------------|
