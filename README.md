@@ -152,5 +152,5 @@ Positions within a game are correlated — if you include all positions, your ef
 
 - Add Stockfish evaluation as a feature
 - Calibration analysis (do 70% predictions win 70% of the time?)
-- [ ] Neural network with board representation
+- Neural network with board representation
 

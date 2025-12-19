@@ -1,0 +1,170 @@
+Loaded 20000 samples
+
+Target distribution:
+white_wins
+1    0.51265
+0    0.48735
+Name: proportion, dtype: float64
+
+============================================================
+Model: Basic (material + elo + move)
+Features: ['material_balance', 'elo_diff', 'side_to_move', 'move_number']
+Samples after dropping NaN: 20000
+
+Test Accuracy: 0.6502
+Test AUC-ROC: 0.7159
+5-Fold CV AUC: 0.7201 (+/- 0.0142)
+
+Feature Coefficients:
+         feature  coefficient
+        elo_diff     0.859564
+material_balance     0.442137
+    side_to_move     0.067062
+     move_number    -0.025966
+
+Confusion Matrix:
+[[1168  781]
+ [ 618 1433]]
+
+============================================================
+Model: Detailed Material
+Features: ['elo_diff', 'side_to_move', 'move_number', 'white_pawns', 'white_knights', 'white_bishops', 'white_rooks', 'white_queens', 'black_pawns', 'black_knights', 'black_bishops', 'black_rooks', 'black_queens']
+Samples after dropping NaN: 20000
+
+Test Accuracy: 0.6502
+Test AUC-ROC: 0.7167
+5-Fold CV AUC: 0.7201 (+/- 0.0150)
+
+Feature Coefficients:
+      feature  coefficient
+     elo_diff     0.859625
+ white_queens     0.467359
+ black_queens    -0.438619
+  white_rooks     0.329927
+  black_rooks    -0.325852
+white_bishops     0.271742
+black_bishops    -0.205692
+black_knights    -0.202637
+white_knights     0.184778
+  black_pawns    -0.177467
+  white_pawns     0.174316
+ side_to_move     0.063425
+  move_number     0.022366
+
+Confusion Matrix:
+[[1164  785]
+ [ 614 1437]]
+
+============================================================
+Model: Material + Castling
+Features: ['elo_diff', 'side_to_move', 'move_number', 'white_pawns', 'white_knights', 'white_bishops', 'white_rooks', 'white_queens', 'black_pawns', 'black_knights', 'black_bishops', 'black_rooks', 'black_queens', 'white_can_castle_kingside', 'white_can_castle_queenside', 'black_can_castle_kingside', 'black_can_castle_queenside']
+Samples after dropping NaN: 20000
+
+Test Accuracy: 0.6488
+Test AUC-ROC: 0.7164
+5-Fold CV AUC: 0.7201 (+/- 0.0161)
+
+Feature Coefficients:
+                   feature  coefficient
+                  elo_diff     0.860763
+              white_queens     0.467826
+              black_queens    -0.436593
+               white_rooks     0.334410
+               black_rooks    -0.320315
+             white_bishops     0.270200
+             black_bishops    -0.207002
+             black_knights    -0.205382
+             white_knights     0.182813
+               black_pawns    -0.173663
+               white_pawns     0.173513
+white_can_castle_queenside     0.101207
+              side_to_move     0.062053
+               move_number     0.056995
+ white_can_castle_kingside    -0.049573
+ black_can_castle_kingside    -0.028010
+black_can_castle_queenside     0.024635
+
+Confusion Matrix:
+[[1174  775]
+ [ 630 1421]]
+
+============================================================
+Model: Full Model (with time)
+Features: ['elo_diff', 'side_to_move', 'move_number', 'white_pawns', 'white_knights', 'white_bishops', 'white_rooks', 'white_queens', 'black_pawns', 'black_knights', 'black_bishops', 'black_rooks', 'black_queens', 'white_can_castle_kingside', 'white_can_castle_queenside', 'black_can_castle_kingside', 'black_can_castle_queenside', 'white_time_ratio', 'black_time_ratio', 'time_ratio_diff']
+Samples after dropping NaN: 20000
+
+Test Accuracy: 0.7113
+Test AUC-ROC: 0.7909
+5-Fold CV AUC: 0.7876 (+/- 0.0086)
+
+Feature Coefficients:
+                   feature  coefficient
+                  elo_diff     0.956978
+           time_ratio_diff     0.737707
+              white_queens     0.541916
+              black_queens    -0.514763
+               white_rooks     0.378853
+               black_rooks    -0.358202
+             white_bishops     0.331329
+             black_knights    -0.282055
+             black_bishops    -0.277102
+             white_knights     0.263735
+               white_pawns     0.246790
+          white_time_ratio     0.240526
+               black_pawns    -0.236988
+          black_time_ratio    -0.180741
+               move_number     0.116544
+white_can_castle_queenside     0.066520
+ white_can_castle_kingside    -0.032756
+black_can_castle_queenside     0.018558
+ black_can_castle_kingside    -0.009551
+              side_to_move    -0.004998
+
+Confusion Matrix:
+[[1329  620]
+ [ 535 1516]]
+
+============================================================
+Model: ELO + Time Only (no material)
+Features: ['elo_diff', 'white_time_ratio', 'black_time_ratio', 'time_ratio_diff', 'move_number']
+Samples after dropping NaN: 20000
+
+Test Accuracy: 0.6957
+Test AUC-ROC: 0.7691
+5-Fold CV AUC: 0.7665 (+/- 0.0104)
+
+Feature Coefficients:
+         feature  coefficient
+        elo_diff     0.970641
+ time_ratio_diff     0.682481
+white_time_ratio     0.231884
+black_time_ratio    -0.157788
+     move_number     0.041412
+
+Confusion Matrix:
+[[1289  660]
+ [ 557 1494]]
+
+============================================================
+Model: Simple Full (material balance + elo + move + time)
+Features: ['material_balance', 'elo_diff', 'move_number', 'white_time_ratio', 'black_time_ratio', 'time_ratio_diff']
+Samples after dropping NaN: 20000
+
+Test Accuracy: 0.7117
+Test AUC-ROC: 0.7901
+5-Fold CV AUC: 0.7881 (+/- 0.0082)
+
+Feature Coefficients:
+         feature  coefficient
+        elo_diff     0.957696
+ time_ratio_diff     0.738574
+material_balance     0.534151
+white_time_ratio     0.242499
+black_time_ratio    -0.179253
+     move_number     0.033875
+
+Confusion Matrix:
+[[1324  625]
+ [ 528 1523]]
+
+Model saved to models/1500-1999/bullet.pkl
