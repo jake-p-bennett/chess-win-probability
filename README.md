@@ -4,35 +4,34 @@ Uses logistic regression to predict bullet and blitz chess game outcomes from bo
 
 ## Key Findings
 
-- **Elo difference is the strongest predictor** across all rating bands and time controls
+- **Elo difference is the strongest predictor** across all rating bands and time controls.
+- **Time ratio difference is the second strongest predictor for all rating bands in bullet** - it is third across all rating bands in blitz (both 3+0 and 5+0).
+- **Time pressure appears to affect all players equally** especially in 5+0 blitz chess - coefficients are similar from 1000-2500 Elo. 
+- **Material advantage seems to matter less at higher ratings**: coefficient decreases from 0.79 → 0.68 → 0.61 as rating increases.
 
-- **Time pressure affects all players equally** — coefficients are similar from 1000-2500 Elo
-- **Material advantage matters slightly less at higher ratings** (0.71 → 0.59 coefficient)
 
-### Model Performance (3+0 blitz)
 
-| Rating Band | N Samples | AUC-ROC |
-|-------------|-----------|---------|
-| 1000-1500   | 20,000   | 0.72    |
-| 1500-2000   | 20,000   | 0.77    |
-| 2000-2500   | 20,000   | 0.81    |
+## Visualizations
 
-Increase in 5-fold cross-validation AUC for each rating band may indicate that there is more randomness in games among lower rated players.
+### Time Coefficient Comparison
+
+The effect of time pressure decreases as the total starting time of the game increases. Across rating bands, the effect of time pressure appears to be similar.
 
 ![Time Coefficient Comparison](images/time_coefficient_comparison.png)
+
+### Coefficient Heatmap
+
+In blitz chess, time pressure matters, but not as much as rating or material advantages. See results folder in repo for model coefficients for other time controls. 
+
 ![Coefficient Heatmap](images/coefficient_heatmap.png)
+
+### Model Performance
+
+A simple logistic linear regression model predicts win probability fairly well. Model was trained on 20,000 games for each rating band.
+
 ![AUC Comparison](images/auc_comparison.png)
 
-### Feature Coefficients (1500-2000 Elo, 3+0 blitz)
 
-| Feature | Coefficient | Interpretation |
-|---------|-------------|----------------|
-| `elo_diff` | 0.91 | Rating advantage is most predictive |
-| `material_balance` | 0.60 | Material matters, but less than rating |
-| `time_ratio_diff` | 0.40 | Having more time helps |
-| `white_time_ratio` | 0.13 | Absolute time remaining |
-| `black_time_ratio` | -0.16 | Opponent's time (negative = good for white) |
-| `move_number` | -0.11 | Later moves slightly favor the defender |
 
 ## Quick Start
 
@@ -74,13 +73,14 @@ chess-win-probability/
 ```bash
 # Download games from players in a rating range
 python scripts/download_games.py \
-    --rating_range 1500 2000 \
+    --rating_range 1500 1999 \
     --num_games 50000 \
-    --output data/games_1500_2000.pgn
+    --output games/games_1500_1999.pgn
+    --perf_type "blitz"
 
 # Or from specific users
 python scripts/download_games.py \
-    --users DrNykterstein Hikaru \
+    --users DrNykterstein EricRosen \
     --max_per_user 1000 \
     --output data/games.pgn
 ```
@@ -114,18 +114,20 @@ python scripts/train_model.py data/features_1500_2000.csv \
 ### 4. Compare Across Datasets
 
 ```bash
-# Generate comparison table for your blog
+# Generate comparison table across different rating bands or time controls
 python scripts/compare_models.py \
-    data/features_1000_1500.csv \
-    data/features_1500_2000.csv \
-    data/features_2000_2500.csv \
-    --labels "1000-1500" "1500-2000" "2000-2500" \
-    --output_csv results/comparison_by_rating.csv
+    features/1000-1499/bullet.csv \
+    features/1500-1999/bullet.csv \
+    features/2000-2499/bullet.csv \
+    --labels "1000-1499" "1500-1999" "2000-2499" \
+    --output_csv results/bullet_comparison_by_rating.csv
 ```
 
 ## Data
 
 Games are downloaded from the [Lichess API](https://lichess.org/api). Raw PGN files are not included in this repo due to size — use `download_games.py` to fetch them.
+
+Bullet chess games start with 1 minute per side. Blitz chess games start with either 3 minutes or 5 minutes (denoted by `blitz_3.txt` and `blitz_5.txt` in the results folder, respectively). 
 
 **Data processing notes:**
 - Only decisive games (no draws) are used for binary classification
@@ -148,7 +150,7 @@ Games are downloaded from the [Lichess API](https://lichess.org/api). Raw PGN fi
 
 ### Why Sample One Position Per Game?
 
-Positions within a game are correlated — if you include all positions, your effective sample size is much smaller than it appears, and late-game positions trivially predict outcomes. Sampling one random mid-game position per game gives independent samples with genuine uncertainty.
+Positions within a game are correlated — including all positions reduces effective sample size. Sampling one random mid-game position per game gives independent samples with genuine uncertainty.
 
 ### Why Exclude First/Last 5 Moves?
 
@@ -157,7 +159,12 @@ Positions within a game are correlated — if you include all positions, your ef
 
 ## Possible Extensions
 
+- Add 500-999 and 2500+ rating bands
+- Add more granular rating bands
+- Add rapid games (considered for this project, but there are far fewer rapid games available)
+- Add games with increment (time added on after each move)
 - Add Stockfish evaluation as a feature
+- Analyze correlation of features
 - Calibration analysis (do 70% predictions win 70% of the time?)
 - Neural network with board representation
 

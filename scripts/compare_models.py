@@ -154,9 +154,9 @@ def main():
             continue
     
     # Generate and print markdown table
-    print("\n" + "=" * 60)
-    print("MARKDOWN TABLE (copy this into your Quarto blog):")
-    print("=" * 60 + "\n")
+    print("\n" + "=" * 20)
+    print("MARKDOWN TABLE:")
+    print("=" * 20 + "\n")
     
     table = generate_markdown_table(results)
     print(table)

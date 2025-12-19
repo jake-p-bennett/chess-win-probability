@@ -154,7 +154,7 @@ def main():
         
         # Experiment 4: Add time (full model)
         full_cols = castling_cols + feature_sets['time']
-        model, scaler, acc, auc = train_and_evaluate(df, full_cols, "Full Model (with time)")
+        train_and_evaluate(df, full_cols, "Full Model (with time)")
         
         # Experiment 5: Just elo and time (no position info)
         elo_time_cols = ['elo_diff', 'white_time_ratio', 'black_time_ratio', 'time_ratio_diff', 'move_number']
@@ -162,15 +162,15 @@ def main():
         
         # Experiment 6: Material balance + elo + move number + time (simple but complete)
         simple_full_cols = ['material_balance', 'elo_diff', 'move_number', 'white_time_ratio', 'black_time_ratio', 'time_ratio_diff']
-        train_and_evaluate(df, simple_full_cols, "Simple Full (material balance + elo + move + time)")
+        simple_model, simple_scaler, acc, auc = train_and_evaluate(df, simple_full_cols, "Simple Full (material balance + elo + move + time)")
         
-        # Save the full model if requested
+        # Save the simple model if requested
         if args.save_model:
             with open(args.save_model, 'wb') as f:
                 pickle.dump({
-                    'model': model,
-                    'scaler': scaler,
-                    'features': full_cols,
+                    'model': simple_model,
+                    'scaler': simple_scaler,
+                    'features': simple_full_cols,
                 }, f)
             print(f"\nModel saved to {args.save_model}")
     
