@@ -162,14 +162,11 @@ Positions within a game are correlated — including all positions reduces effec
 - **First 5 moves:** Positions carry very little signal about the outcome of the game.
 - **Last 5 moves:** Positions are much more likely to be from games that are nearly decided, inflating accuracy without learning useful signal.
 
-## Possible Extensions
+## Project Status and Possible Extensions
 
-- Add 500-999 and 2500+ rating bands
-- Add more granular rating bands
-- Add rapid games (considered for this project, but there are far fewer rapid games available)
-- Add games with increment (time added on after each move)
-- Add Stockfish evaluation as a feature
-- Analyze correlation of features
+Actively iterating. Possible extensions include:
 - Calibration analysis (do 70% predictions win 70% of the time?)
-- Neural network with board representation
-
+- Error diagnostics (does the model perform poorly on certain types of games?)
+- Add Stockfish evaluation as a feature (does this dominate the win probability, or are there diminishing returns?)
+- Add 500-999 and 2500+ rating bands (does trend of modeling accuracy increasing with rating increase hold?)
+- Analyze correlation of features (does multicollinearity distort coefficient interpretation across rating bands or time controls?)
