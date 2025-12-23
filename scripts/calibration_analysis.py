@@ -16,15 +16,47 @@ Usage:
         --data features/1000-1499/features_3_0.csv features/1500-1999/features_3_0.csv features/2000-2499/features_3_0.csv \
         --labels "1000-1499" "1500-1999" "2000-2499" \
         --output images/calibration_comparison.png
+
+    # Save text output to file
+    python calibration_analysis.py \
+        --model models/1500-1999/blitz_3.pkl \
+        --data features/1500-1999/features_3_0.csv \
+        --output_file calibration_results.txt
 """
 
 import argparse
 import pickle
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.calibration import calibration_curve
+
+
+class OutputCapture:
+    """Captures printed output while still printing to console."""
+
+    def __init__(self):
+        self.lines = []
+
+    def print(self, *args, **kwargs):
+        """Print to console and capture the output."""
+        # Build the output string
+        output = " ".join(str(arg) for arg in args)
+        end = kwargs.get('end', '\n')
+
+        # Print to console
+        print(*args, **kwargs)
+
+        # Capture (include the line ending)
+        self.lines.append(output + end)
+
+    def save(self, filepath: str):
+        """Save captured output to a file."""
+        with open(filepath, 'w') as f:
+            f.writelines(self.lines)
+        print(f"Results saved to {filepath}")
 
 
 def load_model(model_path: str) -> tuple:
@@ -112,18 +144,21 @@ def plot_calibration_histogram(y_prob: np.ndarray, n_bins: int = 10,
     ax.set_title('Distribution of Predictions', fontsize=12)
 
 
-def analyze_calibration(model_paths: list, data_paths: list, 
+def analyze_calibration(model_paths: list, data_paths: list,
                         labels: list = None, output_path: str = None,
-                        n_bins: int = 10):
+                        n_bins: int = 10, output_capture: OutputCapture = None):
     """
     Run calibration analysis for one or more models.
     """
+    # Use output capture if provided, otherwise just print
+    out = output_capture.print if output_capture else print
+
     if labels is None:
         labels = [f"Model {i+1}" for i in range(len(model_paths))]
-    
+
     # Colors for multiple models
     colors = ['#4C72B0', '#55A868', '#C44E52', '#8172B3', '#CCB974']
-    
+
     # Create figure
     if len(model_paths) == 1:
         fig, axes = plt.subplots(1, 2, figsize=(14, 6))
@@ -131,37 +166,37 @@ def analyze_calibration(model_paths: list, data_paths: list,
     else:
         fig, axes = plt.subplots(1, 2, figsize=(14, 6))
         ax_cal, ax_hist = axes
-    
-    print("=" * 60)
-    print("CALIBRATION ANALYSIS")
-    print("=" * 60)
+
+    out("=" * 60)
+    out("CALIBRATION ANALYSIS")
+    out("=" * 60)
     
     all_results = []
     
     for i, (model_path, data_path, label) in enumerate(zip(model_paths, data_paths, labels)):
-        print(f"\n{label}")
-        print("-" * 40)
-        
+        out(f"\n{label}")
+        out("-" * 40)
+
         # Load model and get predictions
         model, scaler, feature_names = load_model(model_path)
         y_true, y_prob = get_test_predictions(model, scaler, feature_names, data_path)
-        
+
         # Calculate metrics
         brier = calculate_brier_score(y_true, y_prob)
-        
+
         # Baseline Brier (always predict base rate)
         base_rate = y_true.mean()
         brier_baseline = calculate_brier_score(y_true, np.full_like(y_prob, base_rate))
-        
+
         # Brier skill score (improvement over baseline)
         brier_skill = 1 - (brier / brier_baseline)
-        
-        print(f"Test samples: {len(y_true)}")
-        print(f"Actual win rate: {y_true.mean():.1%}")
-        print(f"Mean predicted probability: {y_prob.mean():.1%}")
-        print(f"Brier score: {brier:.4f}")
-        print(f"Brier baseline (always predict {base_rate:.1%}): {brier_baseline:.4f}")
-        print(f"Brier skill score: {brier_skill:.4f}")
+
+        out(f"Test samples: {len(y_true)}")
+        out(f"Actual win rate: {y_true.mean():.1%}")
+        out(f"Mean predicted probability: {y_prob.mean():.1%}")
+        out(f"Brier score: {brier:.4f}")
+        out(f"Brier baseline (always predict {base_rate:.1%}): {brier_baseline:.4f}")
+        out(f"Brier skill score: {brier_skill:.4f}")
         
         # Plot calibration curve
         color = colors[i % len(colors)]
@@ -189,20 +224,20 @@ def analyze_calibration(model_paths: list, data_paths: list,
         })
         
         # Print bin-by-bin breakdown
-        print(f"\nCalibration by bin:")
-        print(f"{'Predicted':>12} {'Actual':>12} {'Count':>8}")
-        
+        out(f"\nCalibration by bin:")
+        out(f"{'Predicted':>12} {'Actual':>12} {'Count':>8}")
+
         bin_edges = np.linspace(0, 1, n_bins + 1)
         for j in range(n_bins):
             mask = (y_prob >= bin_edges[j]) & (y_prob < bin_edges[j+1])
             if j == n_bins - 1:  # Include right edge for last bin
                 mask = (y_prob >= bin_edges[j]) & (y_prob <= bin_edges[j+1])
-            
+
             if mask.sum() > 0:
                 bin_pred = y_prob[mask].mean()
                 bin_actual = y_true[mask].mean()
                 bin_count = mask.sum()
-                print(f"{bin_pred:>12.1%} {bin_actual:>12.1%} {bin_count:>8}")
+                out(f"{bin_pred:>12.1%} {bin_actual:>12.1%} {bin_count:>8}")
     
     # Finalize calibration plot
     ax_cal.plot([0, 1], [0, 1], 'k--', linewidth=1.5, label='Perfect calibration')
@@ -228,19 +263,19 @@ def analyze_calibration(model_paths: list, data_paths: list,
     # Save or show
     if output_path:
         plt.savefig(output_path, dpi=150, bbox_inches='tight')
-        print(f"\nPlot saved to {output_path}")
+        out(f"\nPlot saved to {output_path}")
     else:
         plt.show()
-    
+
     plt.close()
-    
+
     # Summary table
-    print("\n" + "=" * 60)
-    print("SUMMARY")
-    print("=" * 60)
+    out("\n" + "=" * 60)
+    out("SUMMARY")
+    out("=" * 60)
     results_df = pd.DataFrame(all_results)
-    print(results_df.to_string(index=False))
-    
+    out(results_df.to_string(index=False))
+
     return results_df
 
 
@@ -262,6 +297,12 @@ Examples:
         --data features/1000-1499/features_3_0.csv features/1500-1999/features_3_0.csv \\
         --labels "1000-1499" "1500-1999" \\
         --output images/calibration_comparison.png
+
+    # Save text output to file
+    python calibration_analysis.py \\
+        --model models/1500-1999/blitz_3.pkl \\
+        --data features/1500-1999/features_3_0.csv \\
+        --output_file calibration_results.txt
         """
     )
     parser.add_argument('--model', nargs='+', required=True, 
@@ -274,7 +315,9 @@ Examples:
                         help='Output path for calibration plot (optional, shows plot if not provided)')
     parser.add_argument('--bins', type=int, default=10,
                         help='Number of bins for calibration curve (default: 10)')
-    
+    parser.add_argument('--output_file', type=str, default=None,
+                        help='Path to save text output (optional)')
+
     args = parser.parse_args()
     
     # Validate inputs
@@ -285,15 +328,23 @@ Examples:
     if args.labels and len(args.labels) != len(args.model):
         print("Error: Number of labels must match number of models")
         return
-    
+
+    # Set up output capture if saving to file
+    output_capture = OutputCapture() if args.output_file else None
+
     # Run analysis
     analyze_calibration(
         model_paths=args.model,
         data_paths=args.data,
         labels=args.labels,
         output_path=args.output,
-        n_bins=args.bins
+        n_bins=args.bins,
+        output_capture=output_capture
     )
+
+    # Save output to file if requested
+    if output_capture and args.output_file:
+        output_capture.save(args.output_file)
 
 
 if __name__ == '__main__':

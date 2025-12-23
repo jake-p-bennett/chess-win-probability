@@ -1,0 +1,79 @@
+============================================================
+CALIBRATION ANALYSIS
+============================================================
+
+1000-1499
+----------------------------------------
+Test samples: 4000
+Actual win rate: 51.0%
+Mean predicted probability: 50.8%
+Brier score: 0.1858
+Brier baseline (always predict 51.0%): 0.2499
+Brier skill score: 0.2563
+
+Calibration by bin:
+   Predicted       Actual    Count
+        5.1%         6.2%      324
+       15.1%        14.3%      308
+       25.1%        29.5%      319
+       35.1%        37.4%      388
+       45.1%        44.1%      526
+       54.8%        54.8%      648
+       64.9%        66.8%      485
+       74.9%        70.7%      362
+       84.8%        84.8%      322
+       95.1%        93.1%      318
+
+1500-1999
+----------------------------------------
+Test samples: 4000
+Actual win rate: 51.3%
+Mean predicted probability: 51.5%
+Brier score: 0.1865
+Brier baseline (always predict 51.3%): 0.2498
+Brier skill score: 0.2537
+
+Calibration by bin:
+   Predicted       Actual    Count
+        5.2%         7.0%      243
+       15.1%        15.2%      290
+       25.1%        20.7%      368
+       35.3%        36.2%      400
+       45.3%        44.6%      551
+       54.7%        56.5%      655
+       64.5%        64.1%      463
+       74.9%        74.6%      398
+       85.0%        84.6%      358
+       94.7%        93.4%      274
+
+2000-2499
+----------------------------------------
+Test samples: 4000
+Actual win rate: 51.4%
+Mean predicted probability: 51.3%
+Brier score: 0.1791
+Brier baseline (always predict 51.4%): 0.2498
+Brier skill score: 0.2831
+
+Calibration by bin:
+   Predicted       Actual    Count
+        4.7%         4.3%      300
+       14.8%        14.0%      257
+       24.8%        25.2%      325
+       35.1%        32.4%      407
+       45.3%        43.4%      551
+       54.9%        53.9%      694
+       64.8%        69.1%      508
+       75.1%        78.9%      336
+       85.0%        87.2%      298
+       95.3%        93.8%      324
+
+Plot saved to ./images/calibration_analysis/bullet_comparison.png
+
+============================================================
+SUMMARY
+============================================================
+    label  brier_score  brier_baseline  brier_skill  mean_predicted  actual_win_rate  n_samples
+1000-1499     0.185845        0.249905     0.256338        0.508104          0.50975       4000
+1500-1999     0.186464        0.249837     0.253659        0.514538          0.51275       4000
+2000-2499     0.179096        0.249804     0.283053        0.512581          0.51400       4000
