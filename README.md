@@ -27,11 +27,17 @@ In blitz chess, time pressure matters, but not as much as rating or material adv
 
 ### Model Performance
 
-A simple logistic linear regression model predicts win probability fairly well. Model was trained on 20,000 games for each rating band and each time control.
+A simple logistic linear regression model predicts win probability fairly well. Model was trained on 20,000 games for each rating band and each time control. See `results\` folder in repo for modl performance of other time controls.
 
 ![AUC Comparison](images/auc_comparison.png)
 
+### Calibration Analysis
 
+The model is well-calibrated across time controls and rating bands, with all Brier scores less than 0.2. The predictions for the 1000-1499 and 1500-1999 rating bands appear to be roughly normal, while the predictions for the 2000-2499 rating band have more predictions in the 0 to 0.1 and 0.9 to 1 range. This may be because stronger players are better at converting winning positions.
+
+See `images/calibration_analysis` and `results/calibration_analysis` for full results of calibration analysis.
+
+![Calibration Analysis](images/calibration_analysis/blitz_3_comparison.png)
 
 ## Quick Start
 
