@@ -2,6 +2,7 @@
 *.pgn
 games/
 features/
+features_old/
 
 # Python
 __pycache__/
