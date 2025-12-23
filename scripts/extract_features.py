@@ -54,6 +54,9 @@ class PositionFeatures:
     
     # Target
     white_wins: int  # 1 = white wins, 0 = black wins
+    
+    # Metadata
+    game_url: Optional[str] = None  # Lichess game URL
 
 
 PIECE_VALUES = {
@@ -131,7 +134,8 @@ def extract_features_from_position(
     white_time: Optional[float],
     black_time: Optional[float],
     starting_time: Optional[int],
-    white_wins: int
+    white_wins: int,
+    game_url: Optional[str] = None
 ) -> PositionFeatures:
     """Extract all features from a position."""
     
@@ -175,6 +179,7 @@ def extract_features_from_position(
         black_time_ratio=black_time_ratio,
         time_ratio_diff=time_ratio_diff,
         white_wins=white_wins,
+        game_url=game_url,
     )
 
 
@@ -197,6 +202,9 @@ def process_game(game: chess.pgn.Game, time_control_filter: str = None) -> Optio
     else:
         # Skip draws and unfinished games
         return None
+    
+    # Get game URL (Lichess stores this in Site header)
+    game_url = game.headers.get('Site', None)
     
     # Get time control
     time_control = game.headers.get('TimeControl', '')
@@ -272,6 +280,7 @@ def process_game(game: chess.pgn.Game, time_control_filter: str = None) -> Optio
         black_time=sampled['black_time'],
         starting_time=starting_time,
         white_wins=white_wins,
+        game_url=game_url,
     )
 
 
@@ -301,7 +310,8 @@ def process_pgn_file(pgn_path: str, output_path: str, num_games: int = 10000,
         'white_elo', 'black_elo', 'elo_diff',
         'white_time_remaining', 'black_time_remaining',
         'white_time_ratio', 'black_time_ratio', 'time_ratio_diff',
-        'white_wins'
+        'white_wins',
+        'game_url'
     ]
     
     with open(pgn_path, 'r') as pgn_file, open(output_path, 'w', newline='') as csv_file:
