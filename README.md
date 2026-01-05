@@ -76,16 +76,18 @@ chess-win-probability/
 ├── README.md
 ├── requirements.txt
 ├── scripts/
-│   ├── download_games.py    # Fetch games from Lichess API
-│   ├── extract_features.py  # Extract features from PGN files
-│   ├── train_model.py       # Train and evaluate models
-│   ├── compare_models.py    # Compare models across datasets
-│   └── predict.py           # Make predictions on new positions
-├── models/                  # Saved model files (.pkl)
-├── results/                 # Output tables and reports
+│   ├── download_games.py              # Fetch games from Lichess API
+│   ├── extract_features.py            # Extract features from PGN files
+│   ├── train_model.py                 # Train and evaluate models
+│   ├── compare_models.py              # Compare models across datasets
+│   ├── predict.py                     # Make predictions on new positions
+│   ├── calibration_analysis.py        # Make predictions on new positions
+│   └── error_analysis.py.py           # Make predictions on new positions
+├── models/                            # Saved model files (.pkl)
+├── results/                           # Output tables and reports
 ├── notebooks/           
-│   └── results_visualization.ipynb  # Visualize results
-├── images/                  # Saved images of visualized results
+│   └── results_visualization.ipynb    # Visualize results
+└── images/                            # Saved images of visualized results
 ```
 
 ## Full Pipeline
@@ -186,7 +188,7 @@ Bullet chess games start with 1 minute per side. Blitz chess games start with ei
 |---------|-------------|
 | `material_balance` | Centipawn value: Q=900, R=500, B=330, N=320, P=100 (white - black) |
 | `elo_diff` | White's Elo minus Black's Elo |
-| `move_number` | Ply count (half-moves). After 1.e4 c5, this equals 2 |
+| `move_number` | Ply count (half-moves). E.g., after 1.e4 c5, this equals 2 |
 | `white_time_ratio` | White's remaining time / starting time |
 | `black_time_ratio` | Black's remaining time / starting time |
 | `time_ratio_diff` | white_time_ratio - black_time_ratio |
