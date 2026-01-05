@@ -10,13 +10,15 @@ Usage:
         --data features/1500-1999/features_3_0.csv \
         --output results/errors_1500_1999_blitz3.csv \
         --threshold 0.80 \
-        --top 20
+        --top 20 \
+        --output_image results/confidence_vs_error_rate.png
 """
 
 import argparse
 import pickle
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 
@@ -92,8 +94,62 @@ def format_time(seconds: float) -> str:
     return f"{minutes}:{secs:02d}"
 
 
+def plot_confidence_vs_error_rate(test_df: pd.DataFrame, output_path: str, n_bins: int = 10):
+    """Plot error rate vs confidence level."""
+    
+    bin_edges = np.linspace(0.5, 1.0, n_bins + 1)
+    bin_centers = []
+    error_rates = []
+    sample_counts = []
+    
+    for i in range(len(bin_edges) - 1):
+        mask = (test_df['confidence'] >= bin_edges[i]) & (test_df['confidence'] < bin_edges[i+1])
+        if i == len(bin_edges) - 2:  # Include right edge for last bin
+            mask = (test_df['confidence'] >= bin_edges[i]) & (test_df['confidence'] <= bin_edges[i+1])
+        
+        subset = test_df[mask]
+        if len(subset) > 0:
+            bin_centers.append((bin_edges[i] + bin_edges[i+1]) / 2)
+            error_rates.append((~subset['correct']).mean() * 100)
+            sample_counts.append(len(subset))
+    
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+    
+    # Plot error rate
+    color1 = '#C44E52'
+    ax1.plot(bin_centers, error_rates, 'o-', color=color1, linewidth=2, markersize=8, label='Error Rate')
+    ax1.set_xlabel('Model Confidence', fontsize=12)
+    ax1.set_ylabel('Error Rate (%)', fontsize=12, color=color1)
+    ax1.tick_params(axis='y', labelcolor=color1)
+    ax1.set_xlim(0.48, 1.02)
+    ax1.set_ylim(0, max(error_rates) * 1.2 if error_rates else 50)
+    
+    # Add sample count on secondary axis
+    ax2 = ax1.twinx()
+    color2 = '#4C72B0'
+    ax2.bar(bin_centers, sample_counts, width=0.04, alpha=0.3, color=color2, label='Sample Count')
+    ax2.set_ylabel('Sample Count', fontsize=12, color=color2)
+    ax2.tick_params(axis='y', labelcolor=color2)
+    
+    # Title and legend
+    ax1.set_title('Error Rate vs Model Confidence\n(Lower error at higher confidence = well-behaved model)', fontsize=14)
+    
+    # Combined legend
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper right')
+    
+    ax1.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    
+    print(f"\nConfidence vs error rate plot saved to {output_path}")
+
+
 def analyze_errors(model_path: str, data_path: str, threshold: float = 0.80, 
-                   top_n: int = 20, output_path: str = None):
+                   top_n: int = 20, output_path: str = None, output_image: str = None):
     """Run error analysis and print/save results."""
     
     print("Loading model and data...")
@@ -213,6 +269,10 @@ def analyze_errors(model_path: str, data_path: str, threshold: float = 0.80,
         all_errors = test_df[~test_df['correct']].sort_values('error_magnitude', ascending=False)
         all_errors.to_csv(output_path, index=False)
         print(f"\nAll {len(all_errors)} errors saved to {output_path}")
+    
+    # Save plot if requested
+    if output_image:
+        plot_confidence_vs_error_rate(test_df, output_image)
 
 
 def main():
@@ -241,6 +301,8 @@ Examples:
                         help='Number of top errors to display (default: 20)')
     parser.add_argument('--output', type=str, default=None,
                         help='Output path for CSV of all errors (optional)')
+    parser.add_argument('--output_image', type=str, default=None,
+                        help='Output path for confidence vs error rate plot (optional)')
     
     args = parser.parse_args()
     
@@ -249,7 +311,8 @@ Examples:
         data_path=args.data,
         threshold=args.threshold,
         top_n=args.top,
-        output_path=args.output
+        output_path=args.output,
+        output_image=args.output_image,
     )
 
 

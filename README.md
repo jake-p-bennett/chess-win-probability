@@ -39,6 +39,18 @@ See `images/calibration_analysis` and `results/calibration_analysis` for full re
 
 ![Calibration Analysis](images/calibration_analysis/blitz_3_comparison.png)
 
+### Error Analysis
+
+Manual inspection of games where the model was confident but wrong generally shows that the confidence was warranted and the favored player squandered their advantage. For example, in [one of the games analyzed](https://lichess.org/nhAPBbFq#30), black is up a bishop, up on time, and rated 440 points higher than their opponent, so the model predicts a 3.8% chance of white winning.
+
+![Sample Position](images/error_analysis/sample_position.png)
+
+However, just a few moves later, black misses the [fork](https://en.wikipedia.org/wiki/Fork_(chess)) that blunders the black queen -- black resigned.
+
+![Final Position](images/error_analysis/final_position.png)
+
+See `images/error_analysis` for full results of error analysis.
+
 ## Quick Start
 
 ```bash
@@ -133,6 +145,26 @@ python scripts/compare_models.py \
     --labels "1000-1499" "1500-1999" "2000-2499" \
     --output_csv results/bullet_comparison_by_rating.csv
 ```
+### 5. Analyze Model via Calibration Analysis and Error Analysis
+
+```bash
+# Analyze how well-calibrated a model's probability predictions are
+python calibration_analysis.py \
+    --model models/1000-1499/blitz_3.pkl models/1500-1999/blitz_3.pkl models/2000-2499/blitz_3.pkl \
+    --data features/1000-1499/features_3_0.csv features/1500-1999/features_3_0.csv features/2000-2499/features_3_0.csv \
+    --labels "1000-1499" "1500-1999" "2000-2499" \
+    --output images/calibration_comparison.png \
+    --output_file calibration_results.txt
+
+# Finds games where the model was confident but wrong
+# Provides URLs to manually examine games on lichess.org
+python error_analysis.py \
+    --model models/1500-1999/blitz_3.pkl \
+    --data features/1500-1999/features_3_0.csv \
+    --output results/errors_1500_1999_blitz3.csv \
+    --threshold 0.80 \
+    --top 20
+```
 
 ## Data
 
@@ -154,7 +186,7 @@ Bullet chess games start with 1 minute per side. Blitz chess games start with ei
 |---------|-------------|
 | `material_balance` | Centipawn value: Q=900, R=500, B=330, N=320, P=100 (white - black) |
 | `elo_diff` | White's Elo minus Black's Elo |
-| `move_number` | Current move number in the game |
+| `move_number` | Ply count (half-moves). After 1.e4 c5, this equals 2 |
 | `white_time_ratio` | White's remaining time / starting time |
 | `black_time_ratio` | Black's remaining time / starting time |
 | `time_ratio_diff` | white_time_ratio - black_time_ratio |
@@ -171,8 +203,13 @@ Positions within a game are correlated — including all positions reduces effec
 ## Project Status and Possible Extensions
 
 Actively iterating. Possible extensions include:
-- Calibration analysis (do 70% predictions win 70% of the time?)
-- Error diagnostics (does the model perform poorly on certain types of games?)
-- Add Stockfish evaluation as a feature (does this dominate the win probability, or are there diminishing returns?)
-- Add 500-999 and 2500+ rating bands (does trend of modeling accuracy increasing with rating increase hold?)
-- Analyze correlation of features (does multicollinearity distort coefficient interpretation across rating bands or time controls?)
+
+- [x] Calibration analysis (do 70% predictions win 70% of the time?)
+
+- [x] Error diagnostics (does the model perform poorly on certain types of games?)
+
+- [ ] Add Stockfish evaluation as a feature (does this dominate the win probability, or are there diminishing returns?)
+
+- [ ] Add 500-999 and 2500+ rating bands (does trend of modeling accuracy increasing with rating increase hold?)
+
+- [ ] Analyze correlation of features (does multicollinearity distort coefficient interpretation across rating bands or time controls?)
