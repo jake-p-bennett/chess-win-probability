@@ -1,0 +1,371 @@
+Loading model and data...
+
+======================================================================
+OVERALL PERFORMANCE
+======================================================================
+Test samples: 4000
+Correct predictions: 2865 (71.6%)
+Errors: 1135 (28.4%)
+
+======================================================================
+CONFIDENT ERRORS (predicted >80% or <20%, but wrong)
+======================================================================
+Found 20 confident errors
+
+
+--- Error #1 ---
+Game: https://lichess.org/bI1GCYg0
+Predicted: 99.6% white wins
+Actual: Black won
+
+Features:
+  Material balance: 420 centipawns
+  Elo diff (W-B): 776
+  Move number: 48
+  White time: 1:56 (64.4% remaining)
+  Black time: 1:25 (47.2% remaining)
+
+Possible explanation:
+  - Model favored white due to +776 Elo advantage
+  - Model favored white due to +420 material
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #2 ---
+Game: https://lichess.org/UwC6lu13
+Predicted: 98.4% white wins
+Actual: Black won
+
+Features:
+  Material balance: 400 centipawns
+  Elo diff (W-B): 821
+  Move number: 75
+  White time: 0:43 (23.9% remaining)
+  Black time: 1:32 (51.1% remaining)
+
+Possible explanation:
+  - Model favored white due to +821 Elo advantage
+  - Model favored white due to +400 material
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #3 ---
+Game: https://lichess.org/CW3EYUw8
+Predicted: 1.8% white wins
+Actual: White won
+
+Features:
+  Material balance: -530 centipawns
+  Elo diff (W-B): -703
+  Move number: 51
+  White time: 1:02 (34.4% remaining)
+  Black time: 0:29 (16.1% remaining)
+
+Possible explanation:
+  - Model favored black due to -703 Elo advantage
+  - Model favored black due to -530 material
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #4 ---
+Game: https://lichess.org/JgnE7TFL
+Predicted: 1.8% white wins
+Actual: White won
+
+Features:
+  Material balance: -230 centipawns
+  Elo diff (W-B): -432
+  Move number: 12
+  White time: 1:23 (46.1% remaining)
+  Black time: 2:49 (93.9% remaining)
+
+Possible explanation:
+  - Model favored black due to -432 Elo advantage
+  - Model favored black due to -230 material
+  - Model favored black due to time advantage
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #5 ---
+Game: https://lichess.org/yxg9Us3w
+Predicted: 97.5% white wins
+Actual: Black won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): 627
+  Move number: 38
+  White time: 2:35 (86.1% remaining)
+  Black time: 2:06 (70.0% remaining)
+
+Possible explanation:
+  - Model favored white due to +627 Elo advantage
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #6 ---
+Game: https://lichess.org/Gn0FFAJe
+Predicted: 96.2% white wins
+Actual: Black won
+
+Features:
+  Material balance: 270 centipawns
+  Elo diff (W-B): 529
+  Move number: 82
+  White time: 0:07 (3.9% remaining)
+  Black time: 0:10 (5.6% remaining)
+
+Possible explanation:
+  - Model favored white due to +529 Elo advantage
+  - Model favored white due to +270 material
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #7 ---
+Game: https://lichess.org/Knsk5UgE
+Predicted: 4.3% white wins
+Actual: White won
+
+Features:
+  Material balance: -10 centipawns
+  Elo diff (W-B): -602
+  Move number: 29
+  White time: 2:33 (85.0% remaining)
+  Black time: 2:45 (91.7% remaining)
+
+Possible explanation:
+  - Model favored black due to -602 Elo advantage
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #8 ---
+Game: https://lichess.org/5CD0IdLZ
+Predicted: 4.4% white wins
+Actual: White won
+
+Features:
+  Material balance: -550 centipawns
+  Elo diff (W-B): -407
+  Move number: 69
+  White time: 0:13 (7.2% remaining)
+  Black time: 0:05 (2.8% remaining)
+
+Possible explanation:
+  - Model favored black due to -407 Elo advantage
+  - Model favored black due to -550 material
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #9 ---
+Game: https://lichess.org/bk04dfby
+Predicted: 95.2% white wins
+Actual: Black won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): 511
+  Move number: 36
+  White time: 2:28 (82.2% remaining)
+  Black time: 2:07 (70.6% remaining)
+
+Possible explanation:
+  - Model favored white due to +511 Elo advantage
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #10 ---
+Game: https://lichess.org/gRHCrFs7
+Predicted: 4.9% white wins
+Actual: White won
+
+Features:
+  Material balance: -150 centipawns
+  Elo diff (W-B): -448
+  Move number: 30
+  White time: 2:07 (70.6% remaining)
+  Black time: 2:36 (86.7% remaining)
+
+Possible explanation:
+  - Model favored black due to -448 Elo advantage
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #11 ---
+Game: https://lichess.org/vJv6MK8O
+Predicted: 94.9% white wins
+Actual: Black won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): 250
+  Move number: 11
+  White time: 2:54 (96.7% remaining)
+  Black time: 1:28 (48.9% remaining)
+
+Possible explanation:
+  - Model favored white due to +250 Elo advantage
+  - Model favored white due to time advantage
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #12 ---
+Game: https://lichess.org/tzvyu8Ft
+Predicted: 5.2% white wins
+Actual: White won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): -630
+  Move number: 21
+  White time: 2:39 (88.3% remaining)
+  Black time: 2:34 (85.6% remaining)
+
+Possible explanation:
+  - Model favored black due to -630 Elo advantage
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #13 ---
+Game: https://lichess.org/nzWAppZN
+Predicted: 5.4% white wins
+Actual: White won
+
+Features:
+  Material balance: -400 centipawns
+  Elo diff (W-B): -622
+  Move number: 58
+  White time: 1:38 (54.4% remaining)
+  Black time: 0:37 (20.6% remaining)
+
+Possible explanation:
+  - Model favored black due to -622 Elo advantage
+  - Model favored black due to -400 material
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #14 ---
+Game: https://lichess.org/VuLpmO1W
+Predicted: 94.5% white wins
+Actual: Black won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): 550
+  Move number: 26
+  White time: 2:33 (85.0% remaining)
+  Black time: 2:32 (84.4% remaining)
+
+Possible explanation:
+  - Model favored white due to +550 Elo advantage
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #15 ---
+Game: https://lichess.org/Fa75ukLj
+Predicted: 93.7% white wins
+Actual: Black won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): 548
+  Move number: 13
+  White time: 2:47 (92.8% remaining)
+  Black time: 2:55 (97.2% remaining)
+
+Possible explanation:
+  - Model favored white due to +548 Elo advantage
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #16 ---
+Game: https://lichess.org/QqhJkxtM
+Predicted: 93.6% white wins
+Actual: Black won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): 210
+  Move number: 18
+  White time: 2:48 (93.3% remaining)
+  Black time: 1:23 (46.1% remaining)
+
+Possible explanation:
+  - Model favored white due to +210 Elo advantage
+  - Model favored white due to time advantage
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #17 ---
+Game: https://lichess.org/BrS0ekNv
+Predicted: 6.5% white wins
+Actual: White won
+
+Features:
+  Material balance: -760 centipawns
+  Elo diff (W-B): -40
+  Move number: 40
+  White time: 0:49 (27.2% remaining)
+  Black time: 1:36 (53.3% remaining)
+
+Possible explanation:
+  - Model favored black due to -760 material
+  - Model favored black due to time advantage
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #18 ---
+Game: https://lichess.org/ELLAcuI5
+Predicted: 6.6% white wins
+Actual: White won
+
+Features:
+  Material balance: -10 centipawns
+  Elo diff (W-B): -505
+  Move number: 20
+  White time: 1:07 (37.2% remaining)
+  Black time: 1:26 (47.8% remaining)
+
+Possible explanation:
+  - Model favored black due to -505 Elo advantage
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #19 ---
+Game: https://lichess.org/lL474z5V
+Predicted: 93.3% white wins
+Actual: Black won
+
+Features:
+  Material balance: 0 centipawns
+  Elo diff (W-B): 485
+  Move number: 21
+  White time: 2:48 (93.3% remaining)
+  Black time: 2:41 (89.4% remaining)
+
+Possible explanation:
+  - Model favored white due to +485 Elo advantage
+  - But black won anyway (tactical oversight? time scramble? blunder?)
+
+--- Error #20 ---
+Game: https://lichess.org/s8cqEya5
+Predicted: 7.0% white wins
+Actual: White won
+
+Features:
+  Material balance: -650 centipawns
+  Elo diff (W-B): -414
+  Move number: 46
+  White time: 2:27 (81.7% remaining)
+  Black time: 1:35 (52.8% remaining)
+
+Possible explanation:
+  - Model favored black due to -414 Elo advantage
+  - Model favored black due to -650 material
+  - But white won anyway (tactical oversight? time scramble? blunder?)
+
+======================================================================
+ERROR PATTERNS
+======================================================================
+
+Material balance in errors:
+  Mean: -5.5
+  Std: 192.9
+
+Elo difference in errors:
+  Mean: -6.6
+  Std: 158.2
+
+Time ratio diff in errors:
+  Mean: -0.006
+  Std: 0.172
+
+Errors by confidence level:
+  50%-60% confidence: 45.0% error rate (1280 samples)
+  60%-70% confidence: 36.9% error rate (852 samples)
+  70%-80% confidence: 21.5% error rate (628 samples)
+  80%-90% confidence: 14.3% error rate (594 samples)
+  90%-100% confidence: 3.9% error rate (646 samples)
+
+Report saved to results/error_analysis/2000-2499/blitz_3.txt

@@ -7,8 +7,7 @@ Uses logistic regression to predict bullet and blitz chess game outcomes from pl
 - **Elo difference is the strongest predictor** across all rating bands and time controls.
 - **Time ratio difference is the second strongest predictor for all rating bands in bullet** - it is third across all rating bands in blitz (both 3+0 and 5+0).
 - **Time pressure appears to affect all players equally** especially in 5+0 blitz chess - coefficients are similar from 1000-2500 Elo. 
-- **Material advantage seems to matter less at higher ratings**: coefficient decreases from 0.79 → 0.68 → 0.61 as rating increases.
-
+- **In 5+0 blitz, material advantage matters less at higher ratings**, while the opposite is true in bullet.
 
 
 ## Visualizations

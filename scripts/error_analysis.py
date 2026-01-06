@@ -10,16 +10,32 @@ Usage:
         --data features/1500-1999/features_3_0.csv \
         --output results/errors_1500_1999_blitz3.csv \
         --threshold 0.80 \
-        --top 20 \
-        --output_image results/confidence_vs_error_rate.png
+        --top 20
 """
 
 import argparse
 import pickle
+import sys
+import io
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+
+
+class Tee:
+    """Write to both stdout and a file."""
+    def __init__(self, file):
+        self.file = file
+        self.stdout = sys.stdout
+    
+    def write(self, data):
+        self.file.write(data)
+        self.stdout.write(data)
+    
+    def flush(self):
+        self.file.flush()
+        self.stdout.flush()
 
 
 def load_model(model_path: str) -> tuple:
@@ -263,12 +279,9 @@ def analyze_errors(model_path: str, data_path: str, threshold: float = 0.80,
             error_rate = (~subset['correct']).mean()
             print(f"  {bins[i]:.0%}-{bins[i+1]:.0%} confidence: {error_rate:.1%} error rate ({len(subset)} samples)")
     
-    # Save to CSV if requested
+    # Save to text file if requested
     if output_path:
-        # Save all errors, not just top N
-        all_errors = test_df[~test_df['correct']].sort_values('error_magnitude', ascending=False)
-        all_errors.to_csv(output_path, index=False)
-        print(f"\nAll {len(all_errors)} errors saved to {output_path}")
+        print(f"\nReport saved to {output_path}")
     
     # Save plot if requested
     if output_image:
@@ -300,20 +313,33 @@ Examples:
     parser.add_argument('--top', type=int, default=20,
                         help='Number of top errors to display (default: 20)')
     parser.add_argument('--output', type=str, default=None,
-                        help='Output path for CSV of all errors (optional)')
+                        help='Output path for text report (optional)')
     parser.add_argument('--output_image', type=str, default=None,
                         help='Output path for confidence vs error rate plot (optional)')
     
     args = parser.parse_args()
     
-    analyze_errors(
-        model_path=args.model,
-        data_path=args.data,
-        threshold=args.threshold,
-        top_n=args.top,
-        output_path=args.output,
-        output_image=args.output_image,
-    )
+    # Set up output to both console and file if requested
+    output_file = None
+    original_stdout = sys.stdout
+    
+    if args.output:
+        output_file = open(args.output, 'w')
+        sys.stdout = Tee(output_file)
+    
+    try:
+        analyze_errors(
+            model_path=args.model,
+            data_path=args.data,
+            threshold=args.threshold,
+            top_n=args.top,
+            output_path=args.output,
+            output_image=args.output_image,
+        )
+    finally:
+        if output_file:
+            sys.stdout = original_stdout
+            output_file.close()
 
 
 if __name__ == '__main__':
