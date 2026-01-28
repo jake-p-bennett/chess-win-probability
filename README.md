@@ -26,7 +26,7 @@ In blitz chess, time pressure matters, but not as much as rating or material adv
 
 ### Model Performance
 
-A simple logistic linear regression model predicts win probability fairly well. Model was trained on 20,000 games for each rating band and each time control. See `results\` folder in repo for modl performance of other time controls.
+A simple logistic linear regression model predicts win probability fairly well. Model was trained on 20,000 games for each rating band and each time control. See `results/` folder in repo for modl performance of other time controls.
 
 ![AUC Comparison](images/auc_comparison.png)
 
